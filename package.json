@@ -1,0 +1,24 @@
+{
+  "name": "chiquitita-language",
+  "displayName": "Chiquitita Language Support",
+  "description": "Syntax highlighting for Chiquitita programming language",
+  "version": "1.0.0",
+  "publisher": "chiquitita",
+  "engines": {
+    "vscode": "^1.50.0"
+  },
+  "categories": ["Programming Languages"],
+  "contributes": {
+    "languages": [{
+      "id": "chiquitita",
+      "aliases": ["Chiquitita", "chiquitita"],
+      "extensions": [".chiq"],
+      "configuration": "./language-configuration.json"
+    }],
+    "grammars": [{
+      "language": "chiquitita",
+      "scopeName": "source.chiquitita",
+      "path": "./chiquitita.tmLanguage.json"
+    }]
+  }
+}

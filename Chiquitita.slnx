@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="conditional.chiq" />
+    <File Path="examples.chiq" />
+    <File Path="hello.chiq" />
+    <File Path="operations.chiq" />
+    <File Path="README.md" />
+    <File Path="variables.chiq" />
+  </Folder>
+  <Project Path="Chiquitita/Chiquitita.fsproj" />
+</Solution>

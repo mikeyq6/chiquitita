@@ -1,0 +1,100 @@
+int sum_i(int a, int b)
+	chiquitita a + b
+
+text md = "Michael"
+text greeting = "Hello, {{md}}! Welcome to Chiquitita."
+
+print greeting
+
+print "result = {{2+3}}"
+print "result = {{2 + 3}}"
+
+int a = 156
+if a > 100
+	print "a is greater than 100"
+elsif a < 110
+	print "a is less than 110"
+else
+	print "a is not greater than 100"
+
+print "a + 3.55 = {{a + 3.55}}"
+
+int x = 34
+int y = 66
+int s = sum_i(x, y)
+int s1 = sum_i(45,2234)
+int s2 = sum_i(s1,78)
+float f1 = 2.33
+float s3 = sum_f(f1, 2.5)
+float f2 = 3.3 * 3.87
+float f3 = x * 32.3
+float f4 = f2 / f3
+int x1 = x/3
+int x2 = y / x
+
+int h1 = x1f
+int b1 = b11111110
+
+print "h1 = {{h1}}"
+print "b1 = {{b1}}"
+
+print "s={{s}}"
+print "s1={{s1}}"
+print "s2={{s2}}"
+print "s3={{s3}}"
+print "f2={{f2}}"
+print "f3={{f3}}"
+print "f4={{f4}}"
+print "x1={{x1}}"
+print "x2={{x2}}"
+
+print "3>2={{3>2}}"
+print "3<2={{3<2}}"
+print "3>=2={{3>=2}}"
+print "3<=2={{3<=2}}"
+print "3<=3={{3<=3}}"
+
+bool isg = 3< 2
+print "isg = {{isg}}"
+
+float sum_f(float a, float b)
+	chiquitita a + b
+
+bool r = isWithin(5, 1, 10)
+print "isWithin(5, 1, 10) = {{r}}"
+
+bool r1 = isWithin(5, 7, 10)
+print "isWithin(5, 7, 10) = {{r1}}"
+
+int x4 = 1
+while x4 < 10
+	x4 = x4 + 1
+	print "x4 = {{x4}}"
+	
+print "x4 = {{x4}}"
+
+main()
+void main()
+	print "Main method executed."
+
+
+bool isWithin(int value, int lower, int upper)
+	chiquitita value >= lower and value <= upper
+
+changeXTo(10)
+print "x after changeXTo(10): {{x}}"
+
+void changeXTo(int newValue)
+	x = newValue
+	chiquitita
+
+text[] fruits = ["Apple","Banana","Cherry"]
+foreach text fruit in fruits
+	print "Fruit: {{fruit}}"
+
+int[] nums = [10,20,30]
+foreach int num in nums
+	print "Num: {{num}}"
+
+int g = 50 mod 8
+print "50 mod 8 = {{g}}"
