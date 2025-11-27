@@ -1188,63 +1188,56 @@ let execute tokens =
                 | [] -> failwith "Expected indented block after if"
             let (ifBody, _) = findIndent rest
             let (body, remaining) = parseMethodBlock ifBody []
+            
+            // Find all elsif/else blocks and what comes after
+            let rec findAllBranches tokens acc =
+                match tokens with
+                | Elsif :: rest ->
+                    let (elsifBody, _) = findIndent rest
+                    let (body, remaining) = parseMethodBlock elsifBody []
+                    findAllBranches remaining (("elsif", rest, body) :: acc)
+                | Else :: rest ->
+                    let (elseBody, _) = findIndent rest
+                    let (body, remaining) = parseMethodBlock elseBody []
+                    (List.rev (("else", rest, body) :: acc), remaining)
+                | _ :: rest -> findAllBranches rest acc
+                | [] -> (List.rev acc, [])
+            
+            let (branches, afterAll) = findAllBranches remaining []
+            
             match condition with
             | BoolVal true ->
                 executeHelper body
-                // Skip else/elsif blocks
-                let rec skipElse tokens =
-                    match tokens with
-                    | Elsif :: _ | Else :: _ ->
-                        let rec skipBlock tokens depth =
-                            match tokens with
-                            | Indent :: rest -> skipBlock rest (depth + 1)
-                            | Dedent :: rest when depth > 1 -> skipBlock rest (depth - 1)
-                            | Dedent :: rest -> skipElse rest
-                            | _ :: rest -> skipBlock rest depth
-                            | [] -> []
-                        skipBlock tokens 0
-                    | _ :: rest -> skipElse rest
-                    | [] -> []
-                executeHelper (skipElse remaining)
+                executeHelper afterAll
             | BoolVal false ->
-                // Check for elsif/else
-                let rec findElseBlock tokens =
-                    match tokens with
-                    | Elsif :: rest ->
-                        let (elsifCondition, _) = parseExpression rest
-                        let (elsifBody, _) = findIndent rest
-                        let (body, remaining) = parseMethodBlock elsifBody []
+                let rec tryBranches branches =
+                    match branches with
+                    | ("elsif", condTokens, branchBody) :: rest ->
+                        let (elsifCondition, _) = parseExpression condTokens
                         match elsifCondition with
                         | BoolVal true ->
-                            executeHelper body
-                            let rec skipRest tokens =
-                                match tokens with
-                                | Elsif :: _ | Else :: _ ->
-                                    let rec skipBlock tokens depth =
-                                        match tokens with
-                                        | Indent :: rest -> skipBlock rest (depth + 1)
-                                        | Dedent :: rest when depth > 1 -> skipBlock rest (depth - 1)
-                                        | Dedent :: rest -> skipRest rest
-                                        | _ :: rest -> skipBlock rest depth
-                                        | [] -> []
-                                    skipBlock tokens 0
-                                | _ :: rest -> skipRest rest
-                                | [] -> []
-                            executeHelper (skipRest remaining)
-                        | BoolVal false -> findElseBlock remaining
+                            executeHelper branchBody
+                            executeHelper afterAll
+                        | BoolVal false -> tryBranches rest
                         | _ -> failwith "Elsif condition must be a boolean"
-                    | Else :: rest ->
-                        let (elseBody, _) = findIndent rest
-                        let (body, remaining) = parseMethodBlock elseBody []
-                        executeHelper body
-                        executeHelper remaining
-                    | _ :: rest -> findElseBlock rest
-                    | [] -> executeHelper []
-                findElseBlock remaining
+                    | ("else", _, branchBody) :: _ ->
+                        executeHelper branchBody
+                        executeHelper afterAll
+                    | [] -> executeHelper afterAll
+                    | _ -> failwith "Invalid branch type"
+                tryBranches branches
             | _ -> failwith "If condition must be a boolean"
         | Elsif :: _ | Else :: _ ->
             // These should be handled by if statement, skip if encountered standalone
-            executeHelper []
+            // Skip to the end of this block
+            let rec skipBlock tokens depth =
+                match tokens with
+                | Indent :: rest -> skipBlock rest (depth + 1)
+                | Dedent :: rest when depth > 0 -> skipBlock rest (depth - 1)
+                | Dedent :: rest -> rest
+                | _ :: rest -> skipBlock rest depth
+                | [] -> []
+            executeHelper (skipBlock tokens 0)
         | While :: rest ->
             let conditionTokens = rest
             let rec findIndent tokens =
